@@ -15,7 +15,14 @@ def _create_all():
                 "    [account]               TEXT UNIQUE NOT NULL,"
                 "    [balance]               REAL NOT NULL," # REAL for simplicity, look [strategy of rounding].
                 "    [capitalization_period] INTEGER"        # NULL: withot capitalization; 0: monthly; >0: period in days.
-                "    ")
+                ")")
+    _db.execute("CREATE TABLE IF NOT EXISTS [interest] (    "
+                "    [id] INTEGER PRIMARY KEY ASC,"
+                "    [account_id] INTEGER NOT NULL,"
+                "    [amount] REAL,"
+                "    FOREIGN KEY(account_id) REFERENCES [deposits](id)"
+                ")")
+    
 
 def connect(dbname):
     global _db
