@@ -51,7 +51,7 @@ def get_interest_amount(date, balance):
                            "     )\n"
                            "ORDER BY PFA DESC\n"
                            "LIMIT 1",
-                           date = date, balance = balance)[0][0]
+                           date = date, balance = balance).fetchone()[0]
 
 #connect("a.dbt")
 #close()
