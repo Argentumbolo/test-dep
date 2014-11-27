@@ -33,12 +33,22 @@ def close():
     global _db
     _db.close()
 
+# values is list of tuples (day_of_entry, from_amount, one_day_interest)
 def add_interest_plan_points(values):
     global _db
     cur = _db.cursor()
     cur.executemany("INSERT OR REPLACE\n"
                     "INTO interest_plan(day_of_entry, from_amount, one_day_interest)\n"
                     "VALUES(?, ?, ?)", values)
+    cur.close()
+    _db.commit()
+
+def add_new_deposit(account, create_date, balance, capitalization_period):
+    global _db
+    cur = _db.cursor()
+    cur.executemany("INSERT\n"
+                    "INTO deposits(account, create_date, balance, capitalization_period)\n"
+                    "VALUES(?, ?, ?, ?)", [account, create_date, balance, capitalization_period])
     cur.close()
     _db.commit()
 

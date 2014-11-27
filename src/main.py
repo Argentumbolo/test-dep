@@ -15,4 +15,4 @@ def main(filename):
 if __name__ == '__main__':
     db.connect("a.dbt")
     # main('percents_table.xls')
-    main('percents_table.csv')
+    main('test_data/percents_table.csv')
