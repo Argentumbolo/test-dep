@@ -15,7 +15,7 @@ def _create_all():
                 "    account               TEXT UNIQUE NOT NULL,\n"
                 "    create_date           DATE NOT NULL,\n"
                 "    balance               REAL NOT NULL,\n" # REAL for simplicity, look strategy of rounding.
-                "    capitalization_period INTEGER\n"        # NULL: withot capitalization; 0: monthly; >0: period in days.
+                "    capitalization_period INTEGER\n"        # NULL: without capitalization; 0: monthly; >0: period in days.
                 ")")
     _db.execute("CREATE TABLE IF NOT EXISTS interest (\n"
                 "    id         INTEGER PRIMARY KEY ASC,\n"
