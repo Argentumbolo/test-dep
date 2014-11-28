@@ -1,11 +1,13 @@
 import re
 import db
 import interest_test_data
-
+import deposits_test_data
 
 def main(filename):
     itest = interest_test_data.parse(filename)
     db.add_interest_plan_points(itest)
+    
+    accdata = deposits_test_data.parse('test_data/deposits')
     
     for balance in (2.5, 25, 250, 2500, 250000, 2500000):
         for date in ('2014-11-20', '2015-01-17', '2015-04-13', '2015-05-15'):
