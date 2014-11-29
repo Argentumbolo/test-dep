@@ -1,34 +1,35 @@
+from glob import glob
+import os.path as path
 import re
-from os.path import splitext
 
+#def _
 
-def _parse_csv(filename):
-    rows = [re.split(r'[,;]', row) for row in open(filename) if row.strip()]
-    res = []
-    for row in rows:
-        day_of_entry = row[0].strip()
-        from_amount = float(row[1])
-        one_day_interest = float(row[2])
-        res.append((day_of_entry, from_amount, one_day_interest))
-    return res
-
-def _parse_xls(filename):
-    import xlrd
-    
-    res = []
-    book = xlrd.open_workbook(filename, formatting_info = True)
-    sheet = book.sheet_by_index(0)
-    for nrow in xrange(sheet.nrows):
-        row = sheet.row_values(nrow)
-        if len(row) == 3 and row[0]:
-            res.append((row[0], float(row[1]), float(row[2])))
-    return res
-
-def parse(filename):
-    ext = splitext(filename)[1]
-    if ext == '.csv':
-        return _parse_csv(filename)
-    elif ext == '.xls':
-        return _parse_xls(filename)
-    else:
-        raise Exception("File format <{0}> not supported.".format(ext))
+def parse(dirname):
+    if path.isdir(dirname):
+        flist = glob(path.join(dirname, '????-????-????-????'))
+        accounts = []
+        for file in flist:
+            dlist = [re.split(r'[,;]', item) for item in open(file).readlines()[1:]]
+            one_res = {'account': path.split(file)[1],
+                       'create_date': None,
+                       'close_date': None,
+                       'capitalization': None,
+                       'operations': []} # {'date': 'XXXX-XX-XX', 'amount': float(+-XXXX.XX)}
+            for row in dlist:
+                operation = row[0].strip()
+                if operation == '@':
+                    one_res['create_date'] = row[1].strip()
+                    one_res['account'] = float(row[2])
+                    if len(row) > 3 and row[3].strip():
+                        one_res['capitalization'] = int(row[3])
+                elif operation == '#':
+                    one_res['close_date'] = row[1].strip()
+                elif operation in '+-':
+                    one_res['operations'].append({
+                                           'date' : row[1].strip(),
+                                           'add'  : float(row[0].strip() + row[2].strip())
+                                           })
+                else:
+                    raise Exception("Undefined option <{0}> in file <{1}>.".format(operation, file))
+            accounts.append(one_res)
+        return accounts
